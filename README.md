@@ -107,13 +107,6 @@ chmod +x database/scripts/init_all_42_clubs.sh
 MYSQL_USER=root bash database/scripts/init_all_42_clubs.sh
 ```
 
-可选环境变量：
-- `MYSQL_HOST`
-- `MYSQL_PORT`
-- `MYSQL_USER`
-- `MYSQL_PASSWORD`
-- `MASTER_DB`（默认 `mucclub`）
-
 ### 3. 手动初始化（单社团场景）
 
 ```bash
@@ -231,21 +224,36 @@ npm run serve
 
 项目包含全面的UI自动化测试，使用Playwright框架：
 
-# 运行测试
+### 运行测试
+
+```bash
 cd frontend
 npm run test
+```
+### 生成测试报告
 
-# 生成测试报告
+```bash
 npm run test:report
+```
+
 测试覆盖
+
 ✅ 登录功能测试（正常登录、错误密码、空用户名/密码）
+
 ✅ 仪表盘功能测试（统计数据、图表显示、权限过滤）
+
 ✅ 成员管理功能测试（CRUD操作、批量导入、权限控制）
+
 ✅ 活动管理功能测试（创建、编辑、审批、删除）
+
 ✅ 活动参与管理测试（报名、取消报名、参与人员管理）
+
 ✅ 数据导出功能测试（Excel/PDF导出、下载）
+
 ✅ 响应式设计测试（桌面端、平板端、手机端）
+
 ✅ 权限控制测试（不同角色的权限验证）
+
 ✅ 个人中心测试（信息编辑、密码修改）
 
 ## 部署说明
