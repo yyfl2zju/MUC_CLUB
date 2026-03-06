@@ -1,16 +1,8 @@
-﻿# 社团管理系统（多社团数据库隔离版）
-
-> 当前项目根目录即本 README 所在目录：`club_management-main/club_management-main`。
-> 发布到新仓库时，应以该目录作为仓库根目录，而不是外层 `club` 目录。
+﻿# 社团管理系统
 
 ## 1. 项目简介
 
 本项目是高校社团管理平台，采用前后端分离架构，核心目标是“一套后端 + 一套前端 + 多社团独立数据库”。
-
-核心特性：
-- 登录前先选择社团，登录后全部业务自动落到该社团数据库
-- 主库 `mucclub` 统一管理社团元数据，社团库 `club_*` 承载业务数据
-- JWT 中携带 `clubId`，后端通过动态数据源实现请求级别的数据库切换
 
 ## 2. 功能范围
 
@@ -64,14 +56,6 @@
 6. MyBatis 在对应数据源执行 SQL
 7. 请求结束清理 `ClubContext`，避免线程复用污染
 
-关键类：
-- `backend/src/main/java/com/club/management/config/DynamicDataSourceConfig.java`
-- `backend/src/main/java/com/club/management/config/DynamicDataSource.java`
-- `backend/src/main/java/com/club/management/config/ClubContext.java`
-- `backend/src/main/java/com/club/management/config/DataSourceInterceptor.java`
-- `backend/src/main/java/com/club/management/config/JwtAuthenticationFilter.java`
-- `backend/src/main/java/com/club/management/common/JwtUtil.java`
-
 ## 5. 目录结构
 
 ```text
@@ -114,7 +98,6 @@
 ├── nginx_config_baota.conf
 └── README.md
 ```
-
 ## 6. 环境准备
 
 - JDK 21
@@ -128,8 +111,7 @@
 ### 7.1 拉取并进入项目目录
 
 ```bash
-git clone <your-repo-url>
-cd club_management-main/club_management-main
+git clone https://github.com/yyfl2zju/MUC_CLUB
 ```
 
 ### 7.2 初始化数据库（推荐一键）
@@ -236,9 +218,9 @@ npm run serve
 - `activity_member`
 - `activity_attachment`
 - `sys_log`
-- `sys_message`（历史兼容）
+- `sys_message`
 
-### 9.3 初始化脚本（保留最关键）
+### 9.3 初始化脚本
 
 `database/init/`：
 - `database_club_master_init.sql`
@@ -261,7 +243,7 @@ npm run serve
 - `/export/*` 导出
 - `/user/*` 个人中心与用户检索
 
-## 11. 权限规则（当前实现）
+## 11. 权限规则
 
 权限主要在 Service 层硬编码判断：
 
@@ -273,56 +255,4 @@ npm run serve
 - 报名列表/报名状态维护：社长、副社长、部长
 - 导出：社长、副社长、部长、副部长、指导老师（含系统管理员兼容）
 
-## 12. 生产部署参考
 
-### 12.1 后端
-
-- 本地打包：`backend/build.ps1` 或 `mvn clean package -DskipTests`
-- 服务器部署：`backend/deploy.sh`
-- 详细文档：`backend/DEPLOYMENT_GUIDE.md`
-
-### 12.2 前端
-
-```bash
-cd frontend
-npm install
-npm run build
-```
-
-构建产物在 `frontend/dist`。
-
-Nginx 可参考：
-- `frontend/nginx.conf`（通用模板）
-- `nginx_config_baota.conf`（宝塔示例）
-
-## 13. 常见问题
-
-### 13.1 登录后提示无权限或数据错社团
-- 确认登录请求是否携带了正确 `clubId`
-- 确认 JWT 中包含 `clubId`
-- 确认 `clubs` 表中的 `db_name` 与实际数据库一致
-
-### 13.2 新增社团后访问失败
-- 在主库 `clubs` 先写入社团元数据
-- 创建对应 `club_xxx` 数据库并执行 `database_club_schema.sql`
-- 重启后端（当前实现在启动时加载社团数据源）
-
-### 13.3 上传附件失败
-- 检查 `file.upload.path` 是否存在且具备写权限
-- 检查 Nginx `client_max_body_size` 与后端大小限制一致
-
-### 13.4 脚本执行失败
-- 确认 `mysql` 命令可用
-- 确认用户对 `mucclub` 和所有 `club_*` 库有建库/建表权限
-- 优先使用初始化脚本，不要直接用带历史密码的恢复脚本模板
-
-## 14. 已知限制与改进建议
-
-- 动态数据源在应用启动时初始化，新增社团后通常需要重启服务
-- 权限逻辑散落在 Service 层，建议后续统一到注解/AOP 鉴权
-- 部分恢复脚本仍含示例明文密码，需要上线前改为环境变量输入
-- `/auth/dev/token` 仅用于联调，生产必须关闭
-
-## 15. 交接文档
-
-详细交接请见 `PROJECT_HANDOVER.md`（本地交接用文档）。
