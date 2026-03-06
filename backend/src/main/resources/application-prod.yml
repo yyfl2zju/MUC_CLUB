@@ -1,0 +1,60 @@
+# =====================================================
+# 生产环境配置（宝塔面板 Linux 服务器）
+# 启动命令: java -jar club-management.jar --spring.profiles.active=prod
+# =====================================================
+
+spring:
+  # 多数据源配置
+  datasource:
+    # 主数据源配置 (club_master - 存储社团信息)
+    master:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/mucclub?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: mucclub
+      password: mucclub2025  # 生产环境数据库密码，建议通过环境变量设置
+      hikari:
+        minimum-idle: 10
+        maximum-pool-size: 30
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+        pool-name: MasterPool
+
+    # 动态社团数据源配置模板
+    club:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url-prefix: jdbc:mysql://localhost:3306/
+      url-suffix: ?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: mucclub
+      password: mucclub2025  
+      hikari:
+        minimum-idle: 5
+        maximum-pool-size: 15
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+
+# 文件上传配置（Linux 宝塔面板路径）
+file:
+  upload:
+    path: /www/wwwroot/mucclub.xyz/uploads  # 生产环境绝对路径
+    max-file-size: 100MB
+    max-request-size: 200MB
+
+# 日志配置
+logging:
+  level:
+    com.club.management: info  # 生产环境使用 info 级别
+    org.springframework.security: warn
+  file:
+    name: /www/server/club/logs/club-management.log  # 日志文件路径
+    max-size: 100MB
+    max-history: 30  # 保留30天
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# MyBatis Plus 配置（生产环境不打印SQL）
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl

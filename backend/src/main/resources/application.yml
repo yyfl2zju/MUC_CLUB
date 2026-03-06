@@ -6,15 +6,19 @@ server:
 spring:
   application:
     name: club-management
+  
+  # 激活的配置文件（启动时通过参数指定: --spring.profiles.active=prod）
+  # profiles:
+  #   active: prod
 
   # 多数据源配置
   datasource:
     # 主数据源配置 (club_master - 存储社团信息)
     master:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/club_master?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-      username: root
-      password: wj20050223  # 请修改为你的数据库密码
+      url: jdbc:mysql://localhost:3306/mucclub?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: mucclub
+      password: mucclub2025  # 开发环境密码，生产环境请在 application-prod.yml 中配置
       hikari:
         minimum-idle: 5
         maximum-pool-size: 20
@@ -28,8 +32,8 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url-prefix: jdbc:mysql://localhost:3306/
       url-suffix: ?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-      username: root
-      password: wj20050223  # 请修改为你的数据库密码
+      username: mucclub
+      password: mucclub2025  # 开发环境密码，生产环境请在 application-prod.yml 中配置
       hikari:
         minimum-idle: 3
         maximum-pool-size: 10
@@ -64,7 +68,9 @@ jwt:
 # 文件上传配置
 file:
   upload:
-    path: uploads  # 文件上传路径（相对于项目根目录）
+    path: uploads  # 文件上传路径（相对于项目根目录，生产环境建议使用绝对路径）
+    max-file-size: 100MB  # 单个文件最大大小
+    max-request-size: 200MB  # 整个请求最大大小
 
 # 日志配置
 logging:
@@ -73,4 +79,5 @@ logging:
     org.springframework.security: debug
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 
